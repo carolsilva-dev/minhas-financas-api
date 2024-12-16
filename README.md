@@ -1,5 +1,5 @@
 ![image](https://ar-media.hptiendaenlinea.com/magefan_blog/Qu_es_una_API_y_c_mo_funciona.png)
-## API Minhas Finaças
+## API Minhas Finanças
 
 ### Para que serve?
 - Essa é a Api que prove dados para a interface da aplicação Minhas Finanças
