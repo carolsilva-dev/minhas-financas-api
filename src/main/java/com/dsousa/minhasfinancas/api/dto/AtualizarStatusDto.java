@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AtualizaStatusDTO {
+public class AtualizarStatusDto {
 
-	private String status;
+    private String status;
 }

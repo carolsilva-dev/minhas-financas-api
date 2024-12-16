@@ -1,73 +1,57 @@
 package com.dsousa.minhasfinancas.service.impl;
 
-import java.util.Optional;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.dsousa.minhasfinancas.exception.ErroAutenticacao;
+import com.dsousa.minhasfinancas.exception.ErroAutentificacao;
 import com.dsousa.minhasfinancas.exception.RegraNegocioException;
 import com.dsousa.minhasfinancas.model.entity.Usuario;
 import com.dsousa.minhasfinancas.model.repository.UsuarioRepository;
 import com.dsousa.minhasfinancas.service.UsuarioService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
-	
-	private UsuarioRepository repository;
-	private PasswordEncoder encoder;
-	
-	public UsuarioServiceImpl(
-			UsuarioRepository repository, 
-			PasswordEncoder encoder) {
-		super();
-		this.repository = repository;
-		this.encoder = encoder;
-	}
 
-	@Override
-	public Usuario autenticar(String email, String senha) {
-		Optional<Usuario> usuario = repository.findByEmail(email);
-		
-		if(!usuario.isPresent()) {
-			throw new ErroAutenticacao("Usuário não encontrado para o email informado.");
-		}
-		
-		boolean senhasBatem = encoder.matches(senha, usuario.get().getSenha());
-		
-		if(!senhasBatem) {
-			throw new ErroAutenticacao("Senha inválida.");
-		}
+    private UsuarioRepository repository;
 
-		return usuario.get();
-	}
+    @Autowired
+    public UsuarioServiceImpl(UsuarioRepository repository) {
+        super();
+        this.repository = repository;
+    }
 
-	@Override
-	@Transactional
-	public Usuario salvarUsuario(Usuario usuario) {
-		validarEmail(usuario.getEmail());
-		criptografarSenha(usuario);
-		return repository.save(usuario);
-	}
+    @Override
+    public Usuario autenticar(String email, String senha) {
+        Optional<Usuario> usuario = repository.findByEmail(email);
 
-	private void criptografarSenha(Usuario usuario) {
-		String senha = usuario.getSenha();
-		String senhaCripto = encoder.encode(senha);
-		usuario.setSenha(senhaCripto);
-	}
+      if (!usuario.isPresent()) {
+          throw new ErroAutentificacao("Usuario não encontrado.");
+    }
+      if(!usuario.get().getSenha().equals(senha)) {
+          throw new ErroAutentificacao("Senha inválida.");
+      }
+      return usuario.get();
+    }
 
-	@Override
-	public void validarEmail(String email) {
-		boolean existe = repository.existsByEmail(email);
-		if(existe) {
-			throw new RegraNegocioException("Já existe um usuário cadastrado com este email.");
-		}
-	}
+    @Override
+    @Transactional
+    public Usuario salvarUsuario(Usuario usuario) {
+        validarEmail(usuario.getEmail());
+        return repository.save(usuario);
+    }
 
-	@Override
-	public Optional<Usuario> obterPorId(Long id) {
-		return repository.findById(id);
-	}
+    @Override
+    public void validarEmail(String email) {
+        boolean existe = repository.existsByEmail(email);
+        if (existe) {
+            throw new RegraNegocioException("Ja existe um usuario cadastado com este email");
+        }
+    }
+    @Override
+    public Optional<Usuario> obterPorId(Long id) {
+        return repository.findAllById(id);
+    }
 
 }

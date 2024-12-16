@@ -1,41 +1,44 @@
 package com.dsousa.minhasfinancas.model.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import javax.persistence.*;
 
 @Entity
-@Table( name = "usuario" , schema = "financas")
-@Builder
-@Data
+@Table( name = "usuario", schema = "financas")
+@Setter
+@Getter
+@EqualsAndHashCode
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+
 public class Usuario {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Id
-	@Column(name = "id")
-	@GeneratedValue( strategy = GenerationType.IDENTITY )
-	private Long id;
-	
-	@Column(name = "nome")
-	private String nome;
-	
-	@Column(name = "email")
-	private String email;
-	
-	@Column(name = "senha")
-	@JsonIgnore
-	private String senha;
+    @Column(name = "nome")
+    private String nome;
 
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "senha")
+    @JsonIgnore
+    private String senha;
+
+ public static void main (String[] args){
+     Usuario usuario= new Usuario();
+     usuario.setEmail("douglas@email.com");
+     usuario.setNome("usuario");
+     usuario.setSenha("senha");
+ }
 
 }
+
+
